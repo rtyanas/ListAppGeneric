@@ -37,6 +37,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+// Leroy
+
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	static String WEB_PAGE    = "webpage activity";
@@ -90,8 +92,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
-        // Create tabs
-        
         Tab tabAll =   actionBar.newTab();
         tabAll.setText(mSectionsPagerAdapter.getPageTitle(SectionFragment.ALL_ITEMS));
         tabAll.setTabListener(this);
@@ -103,8 +103,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         Tab tabImage = actionBar.newTab();
         tabImage.setText(mSectionsPagerAdapter.getPageTitle(SectionFragment.IMAGE_ONLY));
         tabImage.setTabListener(this);
-
-        // Add tabs to action bar
+        
         actionBar.addTab(tabAll);
         actionBar.addTab(tabText);
         actionBar.addTab(tabImage);
@@ -185,7 +184,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static final String URL_TO_DISPLAY = "http://www.amazon.com/";
     
     /**
-     * Display the list view of data: text, images and both
+     * Display the list view of data: text images and both
      */
     public static class SectionFragment extends Fragment {
     	static final public int ALL_ITEMS  = 0;
@@ -203,6 +202,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         
         public SectionFragment() {
 
+        	// Get data before displaying
         }
 
         @Override
@@ -221,17 +221,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             ((MainActivity)thisMain).textOnlyAdapter.notifyDataSetChanged();
 
             switch(tabType) {
-            case ALL_ITEMS:            	
-            	// Get the size of textList and imageHM to create a list
-            	// long enough to hold both.  
-            	int textSize = ((MainActivity)thisMain).textList.size();            	
+            case ALL_ITEMS:
+            	int textSize = ((MainActivity)thisMain).textList.size();
+            	
             	int size = textSize + ((MainActivity)thisMain).imageHM.size();
-            	// Create list with AllDataIndex which hold info on whether to
-            	// display text or image.  Then pass to adapter.
-                for (int i= 0, j=0; i < size; i++) {
-                	if(i < textSize) {
+            	int j = 0;
+                for (int i= 0; i < size; i++) {
+                	if(i < textSize)
                 		allDataIndex.add( new MainActivity().new AllDataIndex(i, "text") );
-                	}
                 	else {
                 		allDataIndex.add( new MainActivity().new AllDataIndex(j, "image") );
                 		j++;
@@ -239,40 +236,59 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
                 
                 ListView listV1 = new ListView(getActivity() );
-                // Create new adapter
+    	        listV1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+    				@Override
+    				public void onItemClick(AdapterView<?> arg0, View arg1,
+    						int arg2, long arg3) {
+    					((MainActivity)thisMain).callUrl(URL_TO_DISPLAY);
+    				}
+    	        }); 
+
     	        AllItemsAdapter allAdapter = new AllItemsAdapter(getActivity(),R.layout.row, allDataIndex);
                 listV1.setAdapter(allAdapter);
                 
                 rootView.addView(listV1);
 
     	        break;
-
             case TEXT_ONLY:
                 ids = new String[((MainActivity)thisMain).textList.size()];
 
-                // Create list the size of the textList to pass to Adapter
                 for (int i= 0; i < ids.length; i++){
                     ids[i] = "";
                 }
                 
                 ListView listV2 = new ListView(getActivity() );
+    	        listV2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                // Create new adapter
+    				@Override
+    				public void onItemClick(AdapterView<?> arg0, View arg1,
+    						int arg2, long arg3) {
+    					((MainActivity)thisMain).callUrl(URL_TO_DISPLAY);
+    				}
+    	        });
+
                 listV2.setAdapter( new TextOnlyAdapter(getActivity(),R.layout.row, ids)); 
                 rootView.addView(listV2);
 
     	        break;
-
             case IMAGE_ONLY: 
                 ids = new String[((MainActivity)thisMain).imageHM.size()];
 
-                // Create list the size of imageHM to pass into the adapter
                 for (int i= 0; i < ids.length; i++){
                     ids[i] = "";
                 }
                 
                 ListView listV3 = new ListView(getActivity() );
-                // Create new adapter
+    	        listV3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+    				@Override
+    				public void onItemClick(AdapterView<?> arg0, View arg1,
+    						int arg2, long arg3) {
+    					((MainActivity)thisMain).callUrl(URL_TO_DISPLAY);
+    				}
+    	        }); 
+
     	        listV3.setAdapter( new ImageOnlyAdapter(getActivity(),R.layout.row, ids));
                 rootView.addView(listV3);
 
@@ -284,13 +300,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
     
 
-	static String URL_DATA = "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/input_data.json";
+    public void callUrl(String url) {
+    	try {
+    		  Intent intent = new Intent(this, WebActivity.class);
+    		  intent.putExtra(MainActivity.WEB_PAGE, url);
+    		  startActivity(intent);
+    		  
+    		} catch (ActivityNotFoundException e) {
+    		  Toast.makeText(this, "Web application not found."
+    		    + " Please configure a webbrowser",  Toast.LENGTH_LONG).show();
+    		  e.printStackTrace();
+    		}
+    }
+    
+	// static String FUZZ_TEST_DATA = "http://dev.fuzzproductions.com/MobileTest/test.json";
+                                
+	static String FUZZ_TEST_DATA = "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/input_data.json";
 	static String RECORD_ID   = "id";
 	static String RECORD_TYPE = "type";
 	static String RECORD_DATA = "data";
 	static String RECORD_ICON_NAME = "icon_name";
 
-	// Call for JSON data
 	private void getData() {
 		if(sampleList != null)
 			return;
@@ -308,16 +338,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			e.printStackTrace();
 		}
 
-    	// Get text list after data read using URL
 	    textList = getTextTypes();
 	}
 	
 	public boolean getSampleDataNotDone = true;
-
-	/**
-	 * Read JSON data using URL in separate thread.
-	 *
-	 */
+	
     class GetSampleData extends AsyncTask<String, String, String> {
         JsonParser jsonParser = new JsonParser();
         JSONArray sample = null;
@@ -325,7 +350,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	
         protected String doInBackground(String... args) {
         	// getting JSON string from URL
-		    JSONObject json = jsonParser.makeHttpRequest(URL_DATA, "GET",
+		    JSONObject json = jsonParser.makeHttpRequest(FUZZ_TEST_DATA, "GET",
 		            params);
 		
 		    // Check log cat for JSON reponse
@@ -374,8 +399,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		    
 		    return null;
 	     }
-
-        // Populate the images with the bitmap data
+        
         protected void onPostExecute(String result) {
         	String url;
         	String fileName;
@@ -399,8 +423,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         
     } // class GetSampleData extends AsyncTask
     
-
-    // Get text data for adapter
+    
     private ArrayList<String> getTextTypes() {
     	ArrayList<String> textArray = new ArrayList<String>();
     	
@@ -415,23 +438,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	return textArray;
     }
     
-
-    /*
-     * Get the image as a bitmap using a URL in a separate thread.
-     */
+    
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         // ImageView bmImage;
     	Hashtable<Integer, Bitmap> imageHM;
     	Integer intKey;
 
         public DownloadImageTask(Hashtable<Integer, Bitmap> imageHM_in, Integer intKey_in) { // ImageView bmImage) {
-        	// Hash Map to store image
-        	this.imageHM = imageHM_in;
-        	// Key to use with Hash Map
+            // this.bmImage = bmImage;
+            this.imageHM = imageHM_in;
             this.intKey = intKey_in;
         }
 
-        // Get bitmap using URL passed when calling AsyncTask.excute(url).
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -446,17 +464,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             return mIcon11;
         }
 
-        // Store bitmap in Hash Map
         protected void onPostExecute(Bitmap result) {
         	if(result != null)
         		imageHM.put(intKey, result);
         }
     }
-
     
-    /*
-     * Store data type (text or image) and index
-     */
     class AllDataIndex {
     	AllDataIndex(int index, String type_in ) {
     		type = type_in;
