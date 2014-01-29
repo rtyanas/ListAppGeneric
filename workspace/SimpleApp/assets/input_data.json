@@ -1,0 +1,56 @@
+[
+	{
+		"id": "12",
+		"type": "text",
+		"data": "Hello Android"
+	},
+	{
+		"id": "5465465",
+		"type": "image",
+		"data": "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/hiking_the_cat.png"
+	},
+	{
+		"id": "982",
+		"type": "text",
+		"data": "An Android app walks into a bar. Bartender asks, “Can I get you a drink?” The app looks disappointed and says, “That wasn’t my intent.”"
+	},
+	{
+		"id": "5500",
+		"type": "text",
+		"data": "As a software project approaches release, its mass increases. "
+	},
+	{
+		"id": "100",
+		"type": "image",
+		"data": "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/hiking_trail.png"
+	},
+	{
+		"id": "51",
+		"type": "image",
+		"data": "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/sandyhook_panorama_icon.png"
+	},
+	{
+		"id": "123",
+		"type": "text",
+		"data": "Once upon a midnight dreary, while I pondered weak and weary,\nOver many a quaint and curious volume of forgotten lore,\nWhile I nodded, nearly napping, suddenly there came a tapping,\nAs of some one gently rapping, rapping at my chamber door.\n`'Tis some visitor,' I muttered, `tapping at my chamber door -\nOnly this, and nothing more.'"
+	},
+	{
+		"id": "50062",
+		"type": "other",
+		"data": "Nothing"
+	},
+	{
+		"id": "50655",
+		"type": "image",
+		"data": "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/itunes_icon_missing.jpeg"
+	},
+	{
+		"id": "-654",
+		"type": "text"
+	},
+	{
+		"id": "0",
+		"type": "text",
+		"data": ""
+	}
+]
