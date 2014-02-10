@@ -15,7 +15,9 @@ import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -30,8 +32,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -194,6 +198,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
          */
     	int tabPos;
         public static final String ARG_SECTION_NUMBER = "section_number";
+        private AdapterView.OnItemClickListener goToURL = new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, android.view.View arg1,
+					int arg2, long arg3) {
+                if(GlobalSettings.mainActivity) Log.d("SectionFragment", "onCreateView, OnItemClick Clicked , ALL_ITEMS");
+				((MainActivity)thisMain).callUrl("http://www.amazon.com/");
+			}
+        }; 
+
 
         Context mainThisLoc;
         
@@ -236,6 +249,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 
                 ListView listV1 = new ListView(getActivity() );
                 // Create new adapter
+                listV1.setOnItemClickListener(goToURL);
     	        AllItemsAdapter allAdapter = new AllItemsAdapter(getActivity(),R.layout.row, allDataIndex);
                 listV1.setAdapter(allAdapter);
                 
@@ -254,6 +268,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 ListView listV2 = new ListView(getActivity() );
 
                 // Create new adapter
+                listV2.setOnItemClickListener(goToURL);
                 listV2.setAdapter( new TextOnlyAdapter(getActivity(),R.layout.row, ids)); 
                 rootView.addView(listV2);
 
@@ -269,6 +284,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 
                 ListView listV3 = new ListView(getActivity() );
                 // Create new adapter
+                listV3.setOnItemClickListener(goToURL);
     	        listV3.setAdapter( new ImageOnlyAdapter(getActivity(),R.layout.row, ids));
                 rootView.addView(listV3);
 
@@ -279,6 +295,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
     
+    public void callUrl(String url) {
+    	try {
+    		  Intent intent = new Intent(this, WebActivity.class);
+    		  intent.putExtra(MainActivity.WEB_PAGE, url);
+    		  startActivity(intent);
+    		  
+    		} catch (ActivityNotFoundException e) {
+    		  Toast.makeText(this, "Web application not found."
+    		    + " Please configure a webbrowser",  Toast.LENGTH_LONG).show();
+    		  e.printStackTrace();
+    		}
+    }
+    
+
 
 	static String URL_DATA = "https://raw.github.com/rtyanas/ListApp/master/workspace/SimpleApp/assets/input_data.json";
 	static String RECORD_ID   = "id";
